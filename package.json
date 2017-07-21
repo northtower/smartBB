@@ -8,9 +8,12 @@
   "license": "BSD",
   "dependencies": {
     "express": "4.13.4",
-    "redis":"0.7.1"
+    "redis": "0.7.1"
   },
   "scripts": {
     "start": "node index.js"
+  },
+  "devDependencies": {
+    "socket.io": "^2.0.3"
   }
 }
