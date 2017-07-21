@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Chat Example</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <ul class="pages">
+    <li class="chat page">
+      <canvas class="whiteboard" style="background:#02746c" ></canvas>
+
+      <div class="userIcon"> 
+        <button class="play" type="button" >连续播放</button>
+      </div>
+
+      
+      <div id="drag">
+        <h2>item vector</h2>
+        <button id="loadImage" class="loadResource" type="button">image</button>
+        <button id="loadVideo" class="loadResource" type="button">video</button>
+        <button id="clean" class="loadResource" type="button">clean</button>
+      </div>
+
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">replay classroom</h3>
+        <input class="usernameInput" id="classRoomInput" type="text" value="01" maxlength="14" />        
+      </div>
+    </li>
+  </ul>
+
+  <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/replay.js"></script>
+</body>
+</html>

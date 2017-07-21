@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Chat Example</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <ul class="pages">
+    <li class="chat page">
+      <canvas class="whiteboard" style="background:#02746c" ></canvas>
+
+      <div class="colors">
+        <div class="color black"></div>
+        <div class="color red"></div>
+        <div class="color white"></div>
+        <div class="color blue"></div>
+        <div class="color yellow"></div>
+      </div>
+      <div class="userIcon"> 
+        <button class="messages" type="button" style="padding: 10px 20px;border-radius: 5px; background:none; border: 1px  #555 solid; color: #333; " ></button>  
+      </div>
+
+      <div class="userList">
+        <input id="userItem" type="checkbox" value="1">
+      </div>
+      
+      <div id="drag">
+        <h2>item vector</h2>
+        <button id="loadImage" class="loadResource" type="button">image</button>
+        <button id="loadVideo" class="loadResource" type="button">video</button>
+        <button id="clean" class="loadResource" type="button">clean</button>
+      </div>
+
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">classroom</h3>
+        <input class="usernameInput" id="classRoomInput" type="text" value="01" maxlength="14" />
+        <h3 class="title">your name</h3>
+        <input class="usernameInput" id="usernameInput" type="text" value="t1" maxlength="14" />
+      </div>
+    </li>
+  </ul>
+
+  <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>
