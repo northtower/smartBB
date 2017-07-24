@@ -54,9 +54,9 @@ io.on('connection', function (socket) {
   //redis事件
   socket.on('saveTask', function (taskList) {
 
+    //zt 0724
     console.log('socket.on(saveTask):' + socket.classroom);
     redisClient.lpush(socket.classroom , taskList);
-    //redisClient.lpush(socket.classroom , "endTask");
   });
 
   //发送画笔事件
