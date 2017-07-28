@@ -1,4 +1,3 @@
-
 function CWBTaskManager() {
   var p_drawingList = [];
   var p_TaskList = [];
@@ -48,6 +47,10 @@ $(document).ready(function () {
     return $('<div/>').text(input).text();
   }
 
+  //init display video vector
+//  var div1=document.getElementById("example_video_1"); 
+//  div1.style.display='none'; 
+
   var socketed = io();
   $('#loadImage').on('click' , function () {
     var imageURL = "url(http://upload-images.jianshu.io/upload_images/238151-27bb5a7f6a249e67.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)";
@@ -59,17 +62,51 @@ $(document).ready(function () {
     });
   });
 
-   $('#clean').on('click' , function () {
+  $('#clean').on('click', function () {
     var imageURL = "";
-    $('#drag').css("background-image",imageURL);
+    $('#drag').css("background-image", imageURL);
 
     socketed.emit('clean', {
+      oClassroom: inClassroom
+    });
+
+    var div1=document.getElementById("example_video_1"); 
+    div1.style.display='none'; 
+
+  });
+
+  $('#loadVideo').on('click', function () {
+    console.log('loadVideo');
+    var div1=document.getElementById("example_video_1"); 
+    div1.style.display='block'; 
+  });
+
+  $('#play').on('click', function () {
+
+    socketed.emit('videoPlay', {
       oClassroom:inClassroom
     });
   });
 
-  $('#loadVideo').on('click' , function () {
-    
+
+  $('#changeTime').on('click', function () {
+    socketed.emit('videoChangeTime', {
+      oClassroom:inClassroom
+    });
+  });  
+  
+  $('#fullScreen').on('click', function () {
+    var oPlayer = videojs('example_video_1');
+    oPlayer.enterFullScreen();
+    /*
+    console.log('oPlayer.isFullscreen():' + oPlayer.isFullscreen());
+
+    if (oPlayer.isFullscreen()) {
+      oPlayer.requestFullscreen();
+    } else {
+      oPlayer.exitFullscreen();
+    }
+    */
   });
 
 });
@@ -576,7 +613,10 @@ $(function() {
   //loadImage
 
   socket.on('loadimage', onLoadImage);
+  socket.on('loadVideo', onLoadVideo);
   socket.on('clean', onCleanImage);
+  socket.on('videoPlay', onVideoPlay);
+  socket.on('videoChangeTime', onVideoCT);
 
   function onLoadImage(oURL) {
     
@@ -584,12 +624,30 @@ $(function() {
     $('#drag').css("background-image",imageURL);
   }
 
+  function onLoadVideo(oURL) {
+    console.log('fun onLoadVideo');
+  }  
   function onCleanImage(oURL) {
     var imageURL = "";
     $('#drag').css("background-image",imageURL);
   }
 
+  function onVideoPlay() {   
+    console.log('onVideoPlay');
+    var oPlayer = videojs('example_video_1');    
+    if (oPlayer.paused())
+      oPlayer.play();
+    else
+      oPlayer.pause();    
+  }
 
+  function onVideoCT() {   
+    var oPlayer = videojs('example_video_1');
+    console.log('currentTime:' + oPlayer.currentTime());
+    oPlayer.currentTime(5.00); 
+  }
+
+  
   var dragging = false;
   var iX, iY;
 

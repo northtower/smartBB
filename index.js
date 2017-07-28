@@ -1,9 +1,12 @@
 // Setup basic express server
 var express = require('express');
+var logger = require('morgan');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+
+app.use(logger('dev'));
 
 //for redis
 var redis = require('redis');
@@ -70,6 +73,10 @@ io.on('connection', function (socket) {
     io.sockets.in(data.oClassroom).emit('loadimage', data);
   });
   socket.on('clean',     (data) => io.sockets.in(data.oClassroom).emit('clean', data.oURL));
+
+  //for videoJS
+  socket.on('videoPlay',  (data) => io.sockets.in(data.oClassroom).emit('videoPlay', data.oURL));
+  socket.on('videoChangeTime',  (data) => io.sockets.in(data.oClassroom).emit('videoChangeTime', data.oURL));
 
   //item Vector事件
   //socket.on('drag', (data) => socket.broadcast.emit('drag', data));

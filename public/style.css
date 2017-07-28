@@ -191,8 +191,8 @@ ul {
 }
 
  #drag{
-   width:400px;
-   height:300px;
+   width:600px;
+   height:350px;
 /*   background:url(http://upload-images.jianshu.io/upload_images/238151-27bb5a7f6a249e67.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240);*/
    cursor:move;
    position:absolute;
