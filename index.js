@@ -12,8 +12,8 @@ app.use(logger('dev'));
 var redis = require('redis');
 // redis配置参数  
 var redis_config = {  
-//    "host": "192.168.10.29",  
-    "host": "127.0.0.1",  
+    "host": "192.168.10.29",  
+//    "host": "127.0.0.1",  
     "port": 6379  
 };  
 
@@ -79,6 +79,30 @@ io.on('connection', function (socket) {
   socket.on('videoPlay',  (data) => io.sockets.in(data.oClassroom).emit('videoPlay', data.oURL));
   socket.on('videoChangeTime',  (data) => io.sockets.in(data.oClassroom).emit('videoChangeTime', data.oURL));
 
+  socket.on('videoEvent', function(data) {
+
+    console.log('videoEvent changeTime:' + data.oCurrentTime);
+    var oClassKey = data.oClassroom +  '_resourceID';
+
+    redisClient.set(oClassKey, data.oCurrentTime, function (err, response) {
+      if (err) {
+        console.log("err:", err);
+      } else {
+        console.log(response);
+        redisClient.get(oClassKey, function (err, res) {
+          if (err) {
+            console.log("err:", err);
+          } else {
+            console.log(res);
+    //        redisClient.end();
+          }
+        });
+      }
+    });
+ //   io.sockets.in(data.oClassroom).emit('loadimage', data);
+ //   io.sockets.in(data.oClassroom).emit('videoPlay', data.oURL);
+  });
+
   //item Vector事件
   //socket.on('drag', (data) => socket.broadcast.emit('drag', data));
   socket.on('drag', function (data) {
@@ -97,8 +121,7 @@ io.on('connection', function (socket) {
     socket.classroom = oclassroom;
     addedUser = true;
     ++numUsers;
-    
-    
+        
     socket.join(oclassroom);
 
     socket.emit('login', {
@@ -120,7 +143,18 @@ io.on('connection', function (socket) {
         socket.emit("getTaskManager", res);
       }
     });
-    
+
+    //get videoPlayer 
+    redisClient.get("01_resourceID", function (err, res) {
+          if (err) {
+            console.log("err:", err);
+          } else {
+            console.log("login video:" ,res);
+            socket.emit("initVideoPlayer", res);
+            
+          }
+    });
+
   });
 
   // when the user disconnects.. perform this

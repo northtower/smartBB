@@ -97,7 +97,7 @@ $(document).ready(function () {
   
   $('#fullScreen').on('click', function () {
     var oPlayer = videojs('example_video_1');
-    oPlayer.enterFullScreen();
+//    oPlayer.enterFullScreen();
     /*
     console.log('oPlayer.isFullscreen():' + oPlayer.isFullscreen());
 
@@ -150,6 +150,10 @@ $(function() {
 
   //for taskList
   var gTaskManager = new CWBTaskManager();
+
+  //for videoJS
+  var gPlayer = videojs('example_video_1'); 
+  var socketed = io();
 
   //for whiteboard
   var current = {
@@ -313,8 +317,6 @@ $(function() {
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
     classRoom = cleanInput($classRoomInput.val().trim());
-
-    
 
     // If the username is valid
     if (username) {
@@ -513,6 +515,12 @@ $(function() {
     addParticipantsMessage(data);
   });
   
+  //init videoPlayer
+  socket.on('initVideoPlayer' , function(oTime){
+    console.log('initVideoPlayer:' , oTime);
+    gPlayer.currentTime(oTime);
+    gPlayer.play();
+  });
 
   socket.on('getTaskManager', function (taskList) {
       console.log("getTaskManager  count:" + taskList.length);
@@ -624,6 +632,39 @@ $(function() {
     $('#drag').css("background-image",imageURL);
   }
 
+  gPlayer.on("ended", function () {
+    console.log("end", this.currentTime());
+  });
+  gPlayer.on("pause", function () {
+    console.log("pause")
+  });
+  gPlayer.on("firstplay", function () {
+    console.log("firstplay")
+  });
+  gPlayer.on("loadstart", function () {
+    console.log("loadstart")
+  });
+  gPlayer.on("play", function () {
+    console.log("play")
+  });
+  gPlayer.on("timeupdate", function () {
+    
+    //模拟播放事件的存储
+    var oTime = this.currentTime()
+    console.log("timeupdate:",oTime);
+    var inClassroom = cleanInput($classRoomInput.val().trim());
+    
+    socketed.emit('videoEvent', {
+      oClassroom:inClassroom,
+      oCurrentTime:oTime
+    });
+
+    
+  });
+  gPlayer.on("waiting", function () {
+    console.log("waiting")
+  });
+
   function onLoadVideo(oURL) {
     console.log('fun onLoadVideo');
   }  
@@ -657,7 +698,7 @@ $(function() {
     
     switch (data.step) {
       case 0:
-        console.log('onDragEvent step:'+ data.step);
+//        console.log('onDragEvent step:'+ data.step);
         iX = data.ix;
         iY = data.iy;
         dragging = data.idragging;
@@ -677,7 +718,7 @@ $(function() {
         break;
       case 2:
         if (dragging) {
-          console.log('onDragEvent step:'+ data.step);
+//          console.log('onDragEvent step:'+ data.step);
           dragging = false;
           //$("#drag")[0].releaseCapture();
           if(this.releaseCapture)
