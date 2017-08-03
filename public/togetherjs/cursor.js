@@ -262,7 +262,7 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
         left: pageX
       };
       //0802
-      //session.send(lastMessage);
+      session.send(lastMessage);
       return;
     }
     target = $(target);
@@ -282,7 +282,7 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
       offsetY: Math.floor(offsetY)
     };
     //0802    
-    //session.send(lastMessage);
+    session.send(lastMessage);
   }
 
   function makeCursor(color) {
