@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Chat Example</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">  
+  <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>  
+  <script src="http://tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+  
+  <!-- <script src="./togetherjs/togetherjs.js"></script> -->
+  <!-- <script src="./togetherjs-min.js"></script> -->
+
+</head>
+<body>
+  <ul class="pages">
+    <li class="chat page">
+      <canvas class="whiteboard" style="background:#02746c" ></canvas>
+
+      <div class="colors">
+        <div class="color black"></div>
+        <div class="color red"></div>
+        <div class="color white"></div>
+        <div class="color blue"></div>
+        <div class="color yellow"></div>
+      </div>
+      <div class="userIcon"> 
+        <button class="messages" type="button" style="padding: 10px 20px;border-radius: 5px; background:none; border: 1px  #555 solid; color: #333; " ></button>  
+      </div>
+
+      <div class="userList">
+        <input id="userItem" type="checkbox" value="1">
+      </div>
+      
+      <div id="drag" >
+        <h2>item vector</h2>
+        <button id="loadImage" class="loadResource" type="button">image</button>
+        <button id="loadVideo" class="loadResource" type="button">video</button>
+        <button id="loadEditor" class="loadResource" type="button">Editor</button>
+        <button id="clean" class="loadResource" type="button">clean</button>
+        <button onclick="TogetherJS(this); return false;">Start TogetherJS</button>
+        <!-- <div id="tinymce_1" class="tinymce"></div> -->
+        <div id="videoBox" >
+          <button id="play"       class="loadResource" type="button">play</button>
+          <button id="changeTime" class="loadResource" type="button">changeTime</button>
+          <button id="fullScreen" class="loadResource" type="button">fullScreen</button>
+          <video id="example_video_1" 
+            class="video-js vjs-default-skin vjs-big-play-centered" 
+            preload="none" 
+            width="600px" 
+            height="267px"
+            poster="" data-setup='{"autoplay":false}'>
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?sd" type='video/mp4' label='SD' res='480' />
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?hd" type='video/mp4' label='HD' res='1080' />
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?phone" type='video/mp4' label='phone' res='144' />
+          </video>
+        </div>        
+      </div>
+
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">classroom</h3>
+        <input class="usernameInput" id="classRoomInput" type="text" value="01" maxlength="14" />
+        <h3 class="title">your name</h3>
+        <input class="usernameInput" id="usernameInput" type="text" value="t1" maxlength="14" />
+      </div>
+    </li>
+  </ul>
+
+  <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>

@@ -6,6 +6,10 @@
   <link rel="stylesheet" href="style.css">
   <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">  
   <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>  
+  <script src="http://tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+  
+  <!-- <script src="./togetherjs/togetherjs.js"></script> -->
+  <!-- <script src="./togetherjs-min.js"></script> -->
 
 </head>
 <body>
@@ -32,7 +36,10 @@
         <h2>item vector</h2>
         <button id="loadImage" class="loadResource" type="button">image</button>
         <button id="loadVideo" class="loadResource" type="button">video</button>
+        <button id="loadEditor" class="loadResource" type="button">Editor</button>
         <button id="clean" class="loadResource" type="button">clean</button>
+        <button onclick="TogetherJS(this); return false;">Start TogetherJS</button>
+        <div id="tinymce_1" class="tinymce"></div>
         <div id="videoBox" >
           <button id="play"       class="loadResource" type="button">play</button>
           <button id="changeTime" class="loadResource" type="button">changeTime</button>

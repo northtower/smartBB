@@ -81,6 +81,10 @@ $(document).ready(function () {
     div1.style.display='block'; 
   });
 
+  $('#loadEditor').on('click', function () {
+    console.log('loadEditor click');
+  });
+
   $('#play').on('click', function () {
 
     socketed.emit('videoPlay', {
@@ -169,6 +173,15 @@ $(function() {
   for (var i = 0; i < colors.length; i++){
     colors[i].addEventListener('click', onColorUpdate, false);
   }
+
+  //for tinyMCE
+  tinymce.init({ 
+    selector: '.tinymce'
+  });
+
+  $('.tjsbutton').click(function () {
+    $('#togetherjs-dock').toggle();
+  });
 
   socket.on('drawing', onDrawingEvent);
 
@@ -622,6 +635,7 @@ $(function() {
 
   socket.on('loadimage', onLoadImage);
   socket.on('loadVideo', onLoadVideo);
+  socket.on('loadEditor', onLoadEditor);
   socket.on('clean', onCleanImage);
   socket.on('videoPlay', onVideoPlay);
   socket.on('videoChangeTime', onVideoCT);
@@ -668,6 +682,13 @@ $(function() {
   function onLoadVideo(oURL) {
     console.log('fun onLoadVideo');
   }  
+
+   function onLoadEditor(oURL) {
+    console.log('fun onLoadVideo');
+     $("#mceu_13").hide();
+    
+  }  
+
   function onCleanImage(oURL) {
     var imageURL = "";
     $('#drag').css("background-image",imageURL);
