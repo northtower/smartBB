@@ -63,6 +63,7 @@ define(["jquery", "util", "session", "elementFinder", "eventMaker", "templating"
           return;
         }
         var delta = ot.TextReplace.fromChange(history.current, value);
+        console.log('fromChange:' , delta.text);
         assert(delta);
         history.add(delta);
         maybeSendUpdate(msg.element, history, tracker);
@@ -560,6 +561,7 @@ define(["jquery", "util", "session", "elementFinder", "eventMaker", "templating"
     if (tracker) {
       msg.tracker = tracker;
     }
+    console.log('maybeSendUpdate');
     session.send(msg);
   }
 

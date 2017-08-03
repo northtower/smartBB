@@ -261,7 +261,6 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
         top: pageY,
         left: pageX
       };
-      //0802
       session.send(lastMessage);
       return;
     }
@@ -281,7 +280,6 @@ define(["jquery", "ui", "util", "session", "elementFinder", "tinycolor", "eventM
       offsetX: Math.floor(offsetX),
       offsetY: Math.floor(offsetY)
     };
-    //0802    
     session.send(lastMessage);
   }
 
