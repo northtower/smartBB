@@ -12,8 +12,8 @@ app.use(logger('dev'));
 var redis = require('redis');
 // redis配置参数  
 var redis_config = {  
-    "host": "192.168.10.29",  
-//    "host": "127.0.0.1",  
+//    "host": "192.168.10.29",  
+    "host": "127.0.0.1",  
     "port": 6379  
 };  
 

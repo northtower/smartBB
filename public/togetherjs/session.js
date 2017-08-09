@@ -384,6 +384,12 @@ define(["require", "util", "channels", "jquery", "storage"], function (require, 
     });
   }
   session.start = function () {
+
+    var myDate = new Date();
+    var mytime=myDate.toLocaleTimeString(); //获取当前时间
+    var curTime = myDate.toLocaleString( ); //获取日期与时间
+
+    console.log('session start:',curTime);
     initStartTarget();
     initIdentityId().then(function () {
       initShareId().then(function () {
