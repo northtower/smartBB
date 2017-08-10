@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* Channel abstraction.  Supported channels:
+/* Channel abstraction.  Supported socketio:
 
 - WebSocket to an address
 - postMessage between windows
@@ -29,14 +29,14 @@ Methods:
 
 (should I include readyState as an attribute?)
 
-Channels must accept messages immediately, caching if the connection
+socketio must accept messages immediately, caching if the connection
 is not fully established yet.
 
 */
 
 define(["util"], function (util) {
 
-var channels = util.Module("channels");
+var socketio = util.Module("socketio");
 /* Subclasses must define:
 
 - ._send(string)
@@ -102,7 +102,7 @@ var AbstractChannel = util.mixinEvents({
 });
 
 
-channels.WebSocketChannel = util.Class(AbstractChannel, {
+socketio.WebSocketChannel = util.Class(AbstractChannel, {
 
   constructor: function (address) {
     if (address.search(/^https?:/i) === 0) {
@@ -114,6 +114,8 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
     this._lastConnectTime = 0;
     this._backoff = 0;
     this.baseConstructor();
+    console.log('sio()');
+    this.sio = io();
   },
 
   backoffTime: 50, // Milliseconds to add to each reconnect time
@@ -159,7 +161,7 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
       return;
     }
     this._lastConnectTime = Date.now();
-    console.log('channels address:', this.address);
+    console.log('socketio address:', this.address);
     this.socket = new WebSocket(this.address);
     this.socket.onopen = (function () {
       this._flush();
@@ -199,7 +201,7 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
 
 
 /* Sends TO a window or iframe */
-channels.PostMessageChannel = util.Class(AbstractChannel, {
+socketio.PostMessageChannel = util.Class(AbstractChannel, {
   _pingPollPeriod: 100, // milliseconds
   _pingPollIncrease: 100, // +100 milliseconds for each failure
   _pingMax: 2000, // up to a max of 2000 milliseconds
@@ -314,7 +316,7 @@ channels.PostMessageChannel = util.Class(AbstractChannel, {
 
 
 /* Handles message FROM an exterior window/parent */
-channels.PostMessageIncomingChannel = util.Class(AbstractChannel, {
+socketio.PostMessageIncomingChannel = util.Class(AbstractChannel, {
 
   constructor: function (expectedOrigin) {
     this.source = null;
@@ -381,7 +383,7 @@ channels.PostMessageIncomingChannel = util.Class(AbstractChannel, {
 
 });
 
-channels.Router = util.Class(util.mixinEvents({
+socketio.Router = util.Class(util.mixinEvents({
 
   constructor: function (channel) {
     this._channelMessage = this._channelMessage.bind(this);
@@ -468,6 +470,6 @@ var Route = util.Class(util.mixinEvents({
 
 }));
 
-return channels;
+return socketio;
 
 });

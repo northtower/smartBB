@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-define(["require", "util", "channels", "jquery", "storage"], function (require, util, channels, $, storage) {
+define(["require", "util", "channels", "jquery", "storage" ,"socketio"], function (require, util, channels, $, storage,socketio) {
 
   var DEBUG = true;
 
@@ -158,6 +158,7 @@ define(["require", "util", "channels", "jquery", "storage"], function (require, 
     } else if (type.search(/^app\./) === -1) {
       type = "app." + type;
     }
+    console.log('session.appSend:', type);
     msg.type = type;
     session.send(msg);
   };
@@ -226,6 +227,7 @@ define(["require", "util", "channels", "jquery", "storage"], function (require, 
       msg.starting = true;
     }
     // This is a chance for other modules to effect the hello message:
+    console.log('makeHelloMessage');
     session.emit("prepare-hello", msg);
     return msg;
   };

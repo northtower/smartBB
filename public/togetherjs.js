@@ -19,7 +19,8 @@
     // The code to enable (this is defaulting to a Mozilla code):
     analyticsCode: "UA-35433268-28",
     // The base URL of the hub (gets filled in below):
-    hubBase: null,
+    //hubBase: null,
+    hubBase: "https://www.zoutao.com",
     // A function that will return the name of the user:
     getUserName: null,
     // A function that will return the color of the user:
@@ -417,7 +418,7 @@
   TogetherJS.requireConfig = {
     context: "togetherjs",
     baseUrl: baseUrl + "/togetherjs",
-    urlArgs: "bust=" + cacheBust,
+    urlArgs: "",  //"bust=" + cacheBust,
     paths: {
       jquery: "libs/jquery-1.11.1.min",
       walkabout: "libs/walkabout/walkabout",
@@ -542,6 +543,7 @@
   };
 
   var defaultHubBase = "https://hub.togetherjs.com";
+//  var defaultHubBase = "https://www.zoutao.com";
   if (defaultHubBase == "__" + "hubUrl"+ "__") {
     // Substitution wasn't made
     defaultHubBase = "https://hub.togetherjs.mozillalabs.com";

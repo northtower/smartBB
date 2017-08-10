@@ -46,6 +46,7 @@ define(["util", "session", "storage", "require", "templates"], function (util, s
       if (joined) {
         this.view.notifyJoined();
       }
+      console.log('new-peer constructor:' , this);
       this.view.update();
     },
 
