@@ -542,8 +542,8 @@
     return "TogetherJS";
   };
 
-  var defaultHubBase = "https://hub.togetherjs.com";
-//  var defaultHubBase = "https://www.zoutao.com";
+//  var defaultHubBase = "https://hub.togetherjs.com";
+  var defaultHubBase = "https://localhost:3000";
   if (defaultHubBase == "__" + "hubUrl"+ "__") {
     // Substitution wasn't made
     defaultHubBase = "https://hub.togetherjs.mozillalabs.com";

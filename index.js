@@ -43,9 +43,18 @@ app.use(express.static(__dirname + '/public'));
 
 var numUsers = 0;
 
+io.of('/hub/D13iKA9kJw').on('connection', function (socket) {
+    socket.on('test', function (data) {
+        socket.broadcast.emit('event_name',{});
+    });
+});
+
 io.on('connection', function (socket) {
   var addedUser = false;
 
+  var userUrl = socket.request.headers.referer;
+  console.log('userURL:' , userUrl);
+  
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
     // we tell the client to execute 'new message'
@@ -187,3 +196,5 @@ io.on('connection', function (socket) {
   });
 
 });
+
+//var oRooms = io.sockets.manager.rooms();
