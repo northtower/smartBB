@@ -4,6 +4,7 @@ var logger = require('morgan');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+//var io = require('socket.io')(1338);
 var port = process.env.PORT || 3000;
 
 app.use(logger('dev'));
@@ -43,17 +44,12 @@ app.use(express.static(__dirname + '/public'));
 
 var numUsers = 0;
 
-io.of('/hub/D13iKA9kJw').on('connection', function (socket) {
-    socket.on('test', function (data) {
-        socket.broadcast.emit('event_name',{});
-    });
-});
 
 io.on('connection', function (socket) {
   var addedUser = false;
 
   var userUrl = socket.request.headers.referer;
-  console.log('userURL:' , userUrl);
+  console.log('connection userURL:' , userUrl);
   
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
@@ -123,6 +119,7 @@ io.on('connection', function (socket) {
 
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username, oclassroom) {
+    console.log('add user:' , username);
     if (addedUser) return;
 
     // we store the username in the socket session for this client

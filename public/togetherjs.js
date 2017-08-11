@@ -543,7 +543,7 @@
   };
 
 //  var defaultHubBase = "https://hub.togetherjs.com";
-  var defaultHubBase = "https://localhost:3000";
+  var defaultHubBase = "https://127.0.0.1:3000";
   if (defaultHubBase == "__" + "hubUrl"+ "__") {
     // Substitution wasn't made
     defaultHubBase = "https://hub.togetherjs.mozillalabs.com";

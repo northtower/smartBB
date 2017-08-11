@@ -34,6 +34,9 @@ define(["require", "util", "channels", "jquery", "storage" ,"socketio"], functio
 
   var MAX_SESSION_AGE = 30*24*60*60*1000; // 30 days
 
+  var socketed = io();
+  //socketed.emit('add user', "username123" , "classRoom");
+  
   /****************************************
    * URLs
    */
@@ -49,7 +52,10 @@ define(["require", "util", "channels", "jquery", "storage" ,"socketio"], functio
     assert(id, "URL cannot be resolved before TogetherJS.shareId has been initialized");
     TogetherJS.config.close("hubBase");
     var hubBase = TogetherJS.config.get("hubBase");
-    return hubBase.replace(/\/*$/, "") + "/hub/" + id;
+    return hubBase + "/socket.io/?EIO=3&transport=websocket&sid=Wdfu8zidwYG_GlYJAAAC";
+
+    //zout
+//    return hubBase.replace(/\/*$/, "") + "/hub/" + id;
   };
 
   session.shareUrl = function () {

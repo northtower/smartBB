@@ -40,6 +40,26 @@ function CWBTaskManager() {
 
 $(document).ready(function () {
   
+  //init display video vector
+//  var div1=document.getElementById("example_video_1"); 
+//  div1.style.display='none'; 
+
+});
+
+$(function() {
+
+  console.log('function');
+  var FADE_TIME = 150; // ms
+  var TYPING_TIMER_LENGTH = 400; // ms
+  var TEXTCOLORS = [
+    '#e21400', '#91580f', '#f8a700', '#f78b00',
+    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
+    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
+  ];
+
+  // Initialize variables
+  var $window = $(window);
+  var $usernameInput = $('#usernameInput'); // Input for username
   var $classRoomInput = $('#classRoomInput');
   var inClassroom = cleanInput($classRoomInput.val().trim());
 
@@ -47,11 +67,50 @@ $(document).ready(function () {
     return $('<div/>').text(input).text();
   }
 
-  //init display video vector
-//  var div1=document.getElementById("example_video_1"); 
-//  div1.style.display='none'; 
+  var $messages = $('.messages'); // Messages area
+  var $inputMessage = $('.inputMessage'); // Input message input box
 
+  var $loginPage = $('.login.page'); // The login page
+  var $chatPage = $('.chat.page'); // The chatroom page
+
+  // Prompt for setting a username
+  var username;
+  var classRoom;
+  var connected = false;
+  var typing = false;
+  var lastTypingTime;
+  var $currentInput = $classRoomInput.focus();
+
+  var canvas = document.getElementsByClassName('whiteboard')[0];
+  var colors = document.getElementsByClassName('color');
+  var context = canvas.getContext('2d');
+
+  //事件起始时间戳
+  var deadTime = null;
+
+  //for taskList
+  var gTaskManager = new CWBTaskManager();
+
+  //for videoJS
+  var gPlayer = videojs('example_video_1'); 
   var socketed = io();
+
+  //for whiteboard
+  var current = {
+    color: 'white'
+  };
+  var drawing = false;
+
+  canvas.addEventListener('mousedown', onMouseDown, false);
+  canvas.addEventListener('mouseup', onMouseUp, false);
+  canvas.addEventListener('mouseout', onMouseUp, false);
+  canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+
+  for (var i = 0; i < colors.length; i++){
+    colors[i].addEventListener('click', onColorUpdate, false);
+  }
+
+  //ready move 
   $('#loadImage').on('click' , function () {
     var imageURL = "url(http://upload-images.jianshu.io/upload_images/238151-27bb5a7f6a249e67.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)";
 
@@ -102,77 +161,7 @@ $(document).ready(function () {
   $('#fullScreen').on('click', function () {
     var oPlayer = videojs('example_video_1');
 //    oPlayer.enterFullScreen();
-    /*
-    console.log('oPlayer.isFullscreen():' + oPlayer.isFullscreen());
-
-    if (oPlayer.isFullscreen()) {
-      oPlayer.requestFullscreen();
-    } else {
-      oPlayer.exitFullscreen();
-    }
-    */
   });
-
-});
-
-$(function() {
-
-
-  var FADE_TIME = 150; // ms
-  var TYPING_TIMER_LENGTH = 400; // ms
-  var TEXTCOLORS = [
-    '#e21400', '#91580f', '#f8a700', '#f78b00',
-    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-  ];
-
-  // Initialize variables
-  var $window = $(window);
-  var $usernameInput = $('#usernameInput'); // Input for username
-  var $classRoomInput = $('#classRoomInput');
-  var $messages = $('.messages'); // Messages area
-  var $inputMessage = $('.inputMessage'); // Input message input box
-
-  var $loginPage = $('.login.page'); // The login page
-  var $chatPage = $('.chat.page'); // The chatroom page
-
-  // Prompt for setting a username
-  var username;
-  var classRoom;
-  var connected = false;
-  var typing = false;
-  var lastTypingTime;
-  var $currentInput = $classRoomInput.focus();
-
-  var socket = io();
-  var canvas = document.getElementsByClassName('whiteboard')[0];
-  var colors = document.getElementsByClassName('color');
-  var context = canvas.getContext('2d');
-
-  //事件起始时间戳
-  var deadTime = null;
-
-  //for taskList
-  var gTaskManager = new CWBTaskManager();
-
-  //for videoJS
-  var gPlayer = videojs('example_video_1'); 
-  var socketed = io();
-
-  //for whiteboard
-  var current = {
-    color: 'white'
-  };
-  var drawing = false;
-
-  canvas.addEventListener('mousedown', onMouseDown, false);
-  canvas.addEventListener('mouseup', onMouseUp, false);
-  canvas.addEventListener('mouseout', onMouseUp, false);
-  canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
-
-  for (var i = 0; i < colors.length; i++){
-    colors[i].addEventListener('click', onColorUpdate, false);
-  }
 
   //for tinyMCE
   tinymce.init({ 
@@ -183,7 +172,7 @@ $(function() {
     $('#togetherjs-dock').toggle();
   });
 
-  socket.on('drawing', onDrawingEvent);
+  socketed.on('drawing', onDrawingEvent);
 
   window.addEventListener('resize', onResize, false);
   onResize();  
@@ -229,14 +218,13 @@ $(function() {
     ix1 = x1 / w;
     iy1 = y1 / h;
 
-    socket.emit('drawing', {
+    socketed.emit('drawing', {
       x0: ix0,
       y0: iy0,
       x1: ix1,
       y1: iy1,
       color: color
     });
-
   }
 
 
@@ -266,7 +254,7 @@ $(function() {
     gTaskManager.endTask();
     console.log('onMouseUp gDrawingList:' + gTaskManager.getCounts()); 
     //将当前task保存到redis
-    socket.emit('saveTask', gTaskManager.getTaskList());
+    socketed.emit('saveTask', gTaskManager.getTaskList());
     deadTime = null;
   }
 
@@ -339,7 +327,7 @@ $(function() {
       $currentInput = $inputMessage.focus();
 
       // Tell the server your username
-      socket.emit('add user', username , classRoom);
+      socketed.emit('add user', username , classRoom);
     }
   }
 
@@ -348,7 +336,7 @@ $(function() {
     var message = $inputMessage.val();
     // Prevent markup from being injected into the message
     message = cleanInput(message);
-    // if there is a non-empty message and a socket connection
+    // if there is a non-empty message and a socketed connection
     if (message && connected) {
       $inputMessage.val('');
       addChatMessage({
@@ -356,7 +344,7 @@ $(function() {
         message: message
       });
       // tell server to execute 'new message' and send along one parameter
-      socket.emit('new message', message);
+      socketed.emit('new message', message);
     }
   }
 
@@ -446,7 +434,7 @@ $(function() {
     if (connected) {
       if (!typing) {
         typing = true;
-        socket.emit('typing');
+        socketed.emit('typing');
       }
       lastTypingTime = (new Date()).getTime();
 
@@ -454,7 +442,7 @@ $(function() {
         var typingTimer = (new Date()).getTime();
         var timeDiff = typingTimer - lastTypingTime;
         if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
-          socket.emit('stop typing');
+          socketed.emit('stop typing');
           typing = false;
         }
       }, TYPING_TIMER_LENGTH);
@@ -491,7 +479,7 @@ $(function() {
     if (event.which === 13) {
       if (username) {
         sendMessage();
-        socket.emit('stop typing');
+        socketed.emit('stop typing');
         typing = false;
       } else {
         setUsername();
@@ -515,10 +503,10 @@ $(function() {
     $inputMessage.focus();
   });
 
-  // Socket events
+  // socketed events
 
   // Whenever the server emits 'login', log the login message
-  socket.on('login', function (data) {
+  socketed.on('login', function (data) {
     connected = true;
     // Display the welcome message
     var message = "Welcome to classroom " +data.oClassroom ;
@@ -529,13 +517,13 @@ $(function() {
   });
   
   //init videoPlayer
-  socket.on('initVideoPlayer' , function(oTime){
+  socketed.on('initVideoPlayer' , function(oTime){
     console.log('initVideoPlayer:' , oTime);
     gPlayer.currentTime(oTime);
     gPlayer.play();
   });
 
-  socket.on('getTaskManager', function (taskList) {
+  socketed.on('getTaskManager', function (taskList) {
       console.log("getTaskManager  count:" + taskList.length);
 
       //添加时间偏移量与时间锚点
@@ -583,15 +571,15 @@ $(function() {
       }
   });
 
-  socket.on('message', function(message, callback) {});
+  socketed.on('message', function(message, callback) {});
 
   // Whenever the server emits 'new message', update the chat body
-  socket.on('new message', function (data) {
+  socketed.on('new message', function (data) {
     addChatMessage(data);
   });
 
   // Whenever the server emits 'user joined', log it in the chat body
-  socket.on('user joined', function (data) {
+  socketed.on('user joined', function (data) {
     log(data.username + ' joined');
     addParticipantsMessage(data);
     cloneCheckboxWithName(data.username);
@@ -599,46 +587,46 @@ $(function() {
   });
 
   // Whenever the server emits 'user left', log it in the chat body
-  socket.on('user left', function (data) {
+  socketed.on('user left', function (data) {
     log(data.username + ' left');
     addParticipantsMessage(data);
     removeChatTyping(data);
   });
 
   // Whenever the server emits 'typing', show the typing message
-  socket.on('typing', function (data) {
+  socketed.on('typing', function (data) {
     addChatTyping(data);
   });
 
   // Whenever the server emits 'stop typing', kill the typing message
-  socket.on('stop typing', function (data) {
+  socketed.on('stop typing', function (data) {
     removeChatTyping(data);
   });
 
-  socket.on('disconnect', function () {
+  socketed.on('disconnect', function () {
     log('you have been disconnected');
   });
 
-  socket.on('reconnect', function () {
+  socketed.on('reconnect', function () {
     log('you have been reconnected');
     if (username) {
-      socket.emit('add user', username , classRoom);
+      socketed.emit('add user', username , classRoom);
     }
   });
 
-  socket.on('reconnect_error', function () {
+  socketed.on('reconnect_error', function () {
     log('attempt to reconnect has failed');
   }); 
 
 
   //loadImage
 
-  socket.on('loadimage', onLoadImage);
-  socket.on('loadVideo', onLoadVideo);
-  socket.on('loadEditor', onLoadEditor);
-  socket.on('clean', onCleanImage);
-  socket.on('videoPlay', onVideoPlay);
-  socket.on('videoChangeTime', onVideoCT);
+  socketed.on('loadimage', onLoadImage);
+  socketed.on('loadVideo', onLoadVideo);
+  socketed.on('loadEditor', onLoadEditor);
+  socketed.on('clean', onCleanImage);
+  socketed.on('videoPlay', onVideoPlay);
+  socketed.on('videoChangeTime', onVideoCT);
 
   function onLoadImage(oURL) {
     
@@ -713,7 +701,7 @@ $(function() {
   var dragging = false;
   var iX, iY;
 
-  socket.on('drag', onDragEvent);
+  socketed.on('drag', onDragEvent);
 
   function onDragEvent(data) {
     
@@ -758,7 +746,7 @@ $(function() {
     iX = e.clientX - this.offsetLeft;
     iY = e.clientY - this.offsetTop;
 
-    socket.emit('drag', {
+    socketed.emit('drag', {
       step:0,
       ix: iX,
       iy: iY,
@@ -772,7 +760,7 @@ $(function() {
     var oX = e.clientX - iX;
     var oY = e.clientY - iY;
 
-    socket.emit('drag', {
+    socketed.emit('drag', {
       step:1,
       ix: oX,
       iy: oY,
@@ -782,7 +770,7 @@ $(function() {
   };
   $(document).mouseup(function (e) {
     
-    socket.emit('drag', {
+    socketed.emit('drag', {
       step:2,
       ix: 0,
       iy: 0,
