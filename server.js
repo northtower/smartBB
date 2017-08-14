@@ -4,7 +4,6 @@ var logger = require('morgan');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-//var io = require('socket.io')(1338);
 var port = process.env.PORT || 3000;
 
 app.use(logger('dev'));
@@ -191,6 +190,22 @@ io.on('connection', function (socket) {
       username: socket.username
     });
   });
+
+  //for together event
+  socket.on('app.draw', function (oData) {
+
+    //获取用户名和班级名，在测试阶段，唯一标示以班级ID
+    var oName = socket.username;
+    var oRoom = socket.classroom;
+
+    console.log("catch app.draw:" + oData);
+    socket.emit("app.draw", oData);
+//    socket.broadcast.emit("app.draw", oData);
+    
+    //存储与分发
+
+  });
+
 
 });
 

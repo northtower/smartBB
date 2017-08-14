@@ -33,10 +33,7 @@ define(["require", "util", "channels", "jquery", "storage" ,"socketio"], functio
   session.AVATAR_SIZE = 90;
 
   var MAX_SESSION_AGE = 30*24*60*60*1000; // 30 days
-
-  var socketed = io();
-  //socketed.emit('add user', "username123" , "classRoom");
-  
+    
   /****************************************
    * URLs
    */
@@ -146,6 +143,9 @@ define(["require", "util", "channels", "jquery", "storage" ,"socketio"], functio
       TogetherJS._onmessage(msg);
     };
     channel = c;
+
+    //设置事件回调
+    channel._setDrawing();
     session.router.bindChannel(channel);
   }
 
@@ -164,7 +164,7 @@ define(["require", "util", "channels", "jquery", "storage" ,"socketio"], functio
     } else if (type.search(/^app\./) === -1) {
       type = "app." + type;
     }
-    console.log('session.appSend:', type);
+    //console.log('session.appSend:', type);
     msg.type = type;
     session.send(msg);
   };

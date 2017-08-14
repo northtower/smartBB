@@ -57,6 +57,7 @@ var AbstractChannel = util.mixinEvents({
   rawdata: false,
   onclose: null,
   closed: false,
+  hSocket: null, //socketio handle 
 
   baseConstructor: function () {
     this._buffer = [];
@@ -64,17 +65,19 @@ var AbstractChannel = util.mixinEvents({
   },
 
   send: function (data) {
+    var vType;
     if (this.closed) {
       throw 'Cannot send to a closed connection';
     }
     if (typeof data != "string") {
+      vType = data.type;
       data = JSON.stringify(data);
     }
     if (! this._ready()) {
       this._buffer.push(data);
       return;
     }
-    this._send(data);
+    this._send(vType ,data);
   },
 
   _flush: function () {
@@ -146,56 +149,43 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
     }
   },
 
-  _send: function (data) {
-    this.socket.send(data);
+  _send: function (vType , data) {
+
+    //console.log('_send:' , data);
+    this.hSocket.emit(vType ,data);    
+    //this.socket.send(data);
   },
 
   _ready: function () {
-    return this.socket && this.socket.readyState == this.socket.OPEN;
+    //return this.socket && this.socket.readyState == this.socket.OPEN;
+    //zout 需要socketIO的状态判断
+    return true;
   },
 
+  _setDrawing: function () {
+    console.log('_setDrawing');
+    return true;
+  },
+  
   _setupConnection: function () {
     if (this.closed) {
       return;
     }
-    this._lastConnectTime = Date.now();
-    console.log('channels address:', this.address);
-    this.socket = new WebSocket(this.address);
-    this.socket.onopen = (function () {
-      this._flush();
-      this._reopening = false;
-    }).bind(this);
-    this.socket.onclose = (function (event) {
-      this.socket = null;
-      var method = "error";
-      if (event.wasClean) {
-        // FIXME: should I even log clean closes?
-        method = "log";
-      }
-      console[method]('WebSocket close', event.wasClean ? 'clean' : 'unclean',
-                      'code:', event.code, 'reason:', event.reason || 'none');
-      if (! this.closed) {
-        this._reopening = true;
-        if (Date.now() - this._lastConnectTime > this.backoffDetection) {
-          this._backoff = 0;
-        } else {
-          this._backoff++;
-        }
-        var time = Math.min(this._backoff * this.backoffTime, this.maxBackoffTime);
-        setTimeout((function () {
-          this._setupConnection();
-        }).bind(this), time);
-      }
-    }).bind(this);
-    this.socket.onmessage = (function (event) {
-      this._incoming(event.data);
-    }).bind(this);
-    this.socket.onerror = (function (event) {
-      console.error('WebSocket error:', event.data);
-    }).bind(this);
-  }
+    //connect socket.IO
+    this.hSocket = io();
+    
+    //设置缺省用户状态
+    this.hSocket.emit('add user', "zout" , "001");
 
+    //各种事件接收
+
+    this.hSocket.on('app.draw', (data) => this._incoming(data));
+  }
 });
+
+//for event callback
+//channels.hSocket.on('app.draw', onDrawEvent);
+
 
 
 /* Sends TO a window or iframe */
