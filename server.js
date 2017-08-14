@@ -202,12 +202,21 @@ io.on('connection', function (socket) {
     var oRoom = socket.classroom;
 
     console.log("catch app.draw");
-   // socket.emit("app.draw", oData);
     socket.broadcast.to(oRoom).emit("app.draw", oData);
-//    socket.broadcast.emit("app.draw", oData);
     
     //存储与分发
+  });
 
+    //for together event
+  socket.on('form-update', function (oData) {
+
+    //获取用户名和班级名，在测试阶段，唯一标示以班级ID
+    var oRoom = socket.classroom;
+
+    console.log("catch form-update");
+    socket.broadcast.to(oRoom).emit("form-update", oData);
+    
+    //存储与分发
   });
 
 

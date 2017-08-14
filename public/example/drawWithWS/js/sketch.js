@@ -233,18 +233,19 @@ function touchcancel(e) {
 
 // Listens for draw messages, sends info about the drawn lines:
 TogetherJS.hub.on('draw', function (msg) {
-  if (!msg.sameUrl) {
-      return;
-  }
+  // if (!msg.sameUrl) {
+  //     return;
+  // }
   draw(msg.start, msg.end, msg.color, msg.size, msg.compositeOperation, true);
 });
 
 
 // Clears the canvas whenever someone presses the clear-button
 TogetherJS.hub.on('clear', function (msg) {
-  if (!msg.sameUrl) {
-    return;
-  }
+  //zout
+  // if (!msg.sameUrl) {
+  //   return;
+  // }
   clear(false);
 });
 

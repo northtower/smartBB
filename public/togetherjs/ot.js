@@ -337,10 +337,13 @@ define(["util"], function (util) {
     // isn't one.
     getNextToSend: function() {
       var qchange = this.queue[0];
-      if (! qchange) {
-        /* nothing to send */
-        return null;
-      }
+
+      //zout
+      // if (! qchange) {
+      //   /* nothing to send */
+      //   return null;
+      // }
+      
       if (qchange.sent) {
         /* already sent */
         return null;

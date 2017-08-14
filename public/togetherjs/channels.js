@@ -180,6 +180,7 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
     //各种事件接收
 
     this.hSocket.on('app.draw', (data) => this._incoming(data));
+    this.hSocket.on('form-update', (data) => this._incoming(data));
   }
 });
 
