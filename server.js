@@ -118,7 +118,6 @@ io.on('connection', function (socket) {
 
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username, oclassroom) {
-    console.log('add user:' , username);
     if (addedUser) return;
 
     // we store the username in the socket session for this client
@@ -128,6 +127,10 @@ io.on('connection', function (socket) {
     ++numUsers;
         
     socket.join(oclassroom);
+    console.log('add user in classID:' , oclassroom);
+    
+    // socket.leave(oclassroom);
+
 
     socket.emit('login', {
       numUsers: numUsers,
@@ -198,8 +201,9 @@ io.on('connection', function (socket) {
     var oName = socket.username;
     var oRoom = socket.classroom;
 
-    console.log("catch app.draw:" + oData);
-    socket.emit("app.draw", oData);
+    console.log("catch app.draw");
+   // socket.emit("app.draw", oData);
+    socket.broadcast.to(oRoom).emit("app.draw", oData);
 //    socket.broadcast.emit("app.draw", oData);
     
     //存储与分发
