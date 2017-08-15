@@ -181,6 +181,9 @@ channels.WebSocketChannel = util.Class(AbstractChannel, {
 
     this.hSocket.on('app.draw', (data) => this._incoming(data));
     this.hSocket.on('form-update', (data) => this._incoming(data));
+    this.hSocket.on('form-init', (data) => this._incoming(data));
+    this.hSocket.on('app.init', (data) => this._incoming(data));
+    this.hSocket.on('hello', (data) => this._incoming(data));
   }
 });
 

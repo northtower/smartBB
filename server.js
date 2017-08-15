@@ -214,8 +214,52 @@ io.on('connection', function (socket) {
     var oRoom = socket.classroom;
 
     console.log("catch form-update");
-    socket.broadcast.to(oRoom).emit("form-update", oData);
-    
+  //  socket.broadcast.to(oRoom).emit("form-update", oData);
+    //form事件要发给频道中的所有用户，当前用户要根据server的反馈判断行为信息是否被存储。
+    io.sockets.in(oRoom).emit('form-update', oData);
+
+    //存储与分发
+  });
+
+  //form-init与其他控件实例化
+
+  socket.on('hello', function (oData) {
+
+    //获取用户名和班级名，在测试阶段，唯一标示以班级ID
+    var oName = socket.username;
+    var oRoom = socket.classroom;
+
+    console.log("catch hello:" ,oName);
+
+    //连接forms.js中的makeInit（）
+    socket.broadcast.to(oRoom).emit("hello", oData);
+    //存储与分发
+  });
+
+  socket.on('form-init', function (oData) {
+
+    //获取用户名和班级名，在测试阶段，唯一标示以班级ID
+    var oRoom = socket.classroom;
+
+    console.log("catch form-init");
+  //  socket.broadcast.to(oRoom).emit("form-update", oData);
+    //form事件要发给频道中的所有用户，当前用户要根据server的反馈判断行为信息是否被存储。
+    io.sockets.in(oRoom).emit('form-init', oData);
+
+    //存储与分发
+  });
+
+
+  socket.on('app.init', function (oData) {
+
+    //获取用户名和班级名，在测试阶段，唯一标示以班级ID
+    var oRoom = socket.classroom;
+
+    console.log("catch app.init");
+  //  socket.broadcast.to(oRoom).emit("form-update", oData);
+    //form事件要发给频道中的所有用户，当前用户要根据server的反馈判断行为信息是否被存储。
+    io.sockets.in(oRoom).emit('app.init', oData);
+
     //存储与分发
   });
 

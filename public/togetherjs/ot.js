@@ -336,13 +336,19 @@ define(["util"], function (util) {
     // Return the next change to transmit to the server, or null if there
     // isn't one.
     getNextToSend: function() {
-      var qchange = this.queue[0];
+      
+      //zout判断队列是否为空，从对尾取值
+      var ql = this.queue.length;
+      if(ql <= 0){
+        return null;
+      }
+      ql--;
 
-      //zout
-      // if (! qchange) {
-      //   /* nothing to send */
-      //   return null;
-      // }
+      var qchange = this.queue[ql];
+      if (! qchange) {
+        /* nothing to send */
+        return null;
+      }
       
       if (qchange.sent) {
         /* already sent */

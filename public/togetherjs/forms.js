@@ -566,9 +566,10 @@ define(["jquery", "util", "session", "elementFinder", "eventMaker", "templating"
   }
 
   session.hub.on("form-update", function (msg) {
-    if (! msg.sameUrl) {
-      return;
-    }
+    // zout
+    // if (! msg.sameUrl) {
+    //   return;
+    // }
     var el = $(elementFinder.findElement(msg.element));
     var tracker;
     if (msg.tracker) {
@@ -706,9 +707,10 @@ define(["jquery", "util", "session", "elementFinder", "eventMaker", "templating"
   session.on("close", destroyTrackers);
 
   session.hub.on("form-init", function (msg) {
-    if (! msg.sameUrl) {
-      return;
-    }
+    //zout
+    // if (! msg.sameUrl) {
+    //   return;
+    // }
     if (initSent) {
       // In a 3+-peer situation more than one client may init; in this case
       // we're probably the other peer, and not the peer that needs the init
