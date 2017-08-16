@@ -49,6 +49,10 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../../assets/ico/apple-touch-icon-57-precomposed.png">
 
+    <!-- 为video服务 -->
+    <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">  
+    <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>  
+
   </head>
   <body >
     <div class="navbar main-header" id="main-navbar">
@@ -98,7 +102,20 @@
             <i class="fa fa-eraser"></i>
           </a>
        </div> 
-        <div id="tinymce_1" class="tinymce"></div>      
+        <div id="tinymce_1" class="tinymce"></div>   
+        
+        <div id="videoBox">          
+          <video id="example_video_1" class="video-js vjs-default-skin vjs-big-play-centered" preload="none" width="600px" height="267px"
+            poster="" data-setup='{"autoplay":false}'>
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?sd" type='video/mp4' label='SD' res='480' />
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?hd" type='video/mp4' label='HD' res='1080' />
+            <source src="https://vjs.zencdn.net/v/oceans.mp4?phone" type='video/mp4' label='phone' res='144' />
+          </video>
+          <button id="play" class="loadResource" type="button">play</button>
+          <button id="changeTime" class="loadResource" type="button">changeTime</button>
+          <button id="fullScreen" class="loadResource" type="button">fullScreen</button>
+        </div>
+
     </section>
   </div>
 
